@@ -4,16 +4,17 @@ from script import InstagramScraper
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/hashtag', methods=['POST'])
 def search():
     k = InstagramScraper()
-    results = k.profile_page_recent_posts('https://www.instagram.com/kimkardashian/?hl=en')
-    return '<div>'+str(results)+'</div>'
+    hashtag = request.form['hashtag']
+    results = k.profile_page_recent_posts('https://www.instagram.com/explore/tags/'+hashtag)
+    return '<div>' +str(results) +'</div>'
 
 
 if __name__ == "__main__":

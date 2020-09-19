@@ -37,17 +37,17 @@ class InstagramScraper:
         raw_string = script_tag.text.strip().replace('window._sharedData =', '').replace(';', '')
         return json.loads(raw_string)
 
-    def profile_page_metrics(self, profile_url):
+    def profile_page_metrics(self, hashtag):
         results = {}
         try:
-            response = self.__request_url(profile_url)
+            response = self.__request_url(hashtag)
             json_data = self.extract_json_data(response)
-            metrics = json_data['entry_data']['ProfilePage'][0]['graphql']['user']
+            metrics = json_data['entry_data']['TagPage'][0]['graphql']['hashtag']
         except Exception as e:
             raise e
         else:
             for key, value in metrics.items():
-                if key != 'edge_owner_to_timeline_media':
+                if key != 'edge_hashtag_to_media':
                     if value and isinstance(value, dict):
                         value = value['count']
                         results[key] = value
@@ -55,12 +55,12 @@ class InstagramScraper:
                         results[key] = value
         return results
 
-    def profile_page_recent_posts(self, profile_url):
+    def profile_page_recent_posts(self, hashtag):
         results = []
         try:
-            response = self.__request_url(profile_url)
+            response = self.__request_url(hashtag)
             json_data = self.extract_json_data(response)
-            metrics = json_data['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']["edges"]
+            metrics = json_data['entry_data']['TagPage'][0]['graphql']['hashtag']['edge_hashtag_to_media']["edges"]
         except Exception as e:
             raise e
         else:
